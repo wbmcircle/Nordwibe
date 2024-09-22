@@ -69,11 +69,10 @@ const Profile: FC<{ id: string }> = ({ id }) => {
         <div className={styles.userCard}>
           <div className={styles.avatar}>
             {/* заглушка - на половину ширину. фотка юзера на весь размер, со скруглением */}
-            <Image
-              src={user.avatar ? user.avatar : "/icons/userProfile.svg"}
+            <img
+              src={user.avatar ? `https://3133319-bo35045.twc1.net/media/` + user.avatar : "/icons/userProfile.svg"}
               alt="avatar"
-              width={100}
-              height={100}
+              style={{ width: 215, height: 215, borderRadius: '50%' }}
             />
           </div>
           <div className={styles.userInformation}>

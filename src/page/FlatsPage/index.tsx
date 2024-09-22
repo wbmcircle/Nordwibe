@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 const Flats = () => {
 
   const [flats, setFlats] = useState<IRealFlat[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const search = useTypedSelector(
     (selector) => selector.navigationSlice.search.flats
@@ -28,23 +29,24 @@ const Flats = () => {
   }
 
   const getHouses = async () => {
+    setLoading(true);
     const response = await fetch("https://3133319-bo35045.twc1.net/api/v0/house/?distance=10000000000&i_am_owner=U&is_have_bail=U&is_have_fines=U&is_sunny_side=U&is_have_elevator=U&is_have_balcony=U&is_have_parking_space=U&is_have_security=U&is_have_horizontal_bars=U&is_have_conditioner=U&is_have_garbage_chute=U&is_have_wifi=U&is_have_transport_close=U&is_possible_smoke=U&is_possible_animals=U&is_have_washing_machine=U&is_have_dryer=U&is_have_iron=U&is_have_dishwasher=U&is_have_hair_dryer=U&is_have_tv=U&is_have_guest_table=U&is_have_guest_cabinet=U&min_count_photos=0&is_favorite=U", {
       method: "GET",
       credentials: "include",
     });
     const data = await response.json();
-    data.map(async (house: any) => {
-      console.log('====>', house.photos_ids[0])
+    const housesWithInmages = await Promise.all(data.map(async (house: any) => {
       if (house.photos_ids[0]) {
         const imageLink = await getImage(house.photos_ids[0])
-        console.log('imageLink--->', imageLink)
         house.image = 'https://3133319-bo35045.twc1.net/media/' + imageLink
       } else {
         house.image = "https://img.dmclk.ru/vitrina/owner/ce/5e/ce5ee961a36f4648864c92328a8263e0.jpg"
       }
-    })
-    console.log('data----->', data);
-    setFlats(data);
+      return house;
+    }));
+    console.log('data----->', housesWithInmages);
+    setFlats(housesWithInmages);
+    setLoading(false);
   }
 
   useEffect(() => {
@@ -53,7 +55,7 @@ const Flats = () => {
 
   return (
     <div className={styles.flats}>
-      <div className={styles.container}>
+      {!loading && <div className={styles.container}>
         {flats.map(
           (flat) =>
             // flat.user.name.toLowerCase().startsWith(search.toLowerCase()) &&
@@ -61,12 +63,12 @@ const Flats = () => {
             // flat.price >= filters.price.from && (
             <div
               className={styles.flat}
-              key={flat.id.toString() + flat.cost?.toString()}>
+              key={flat?.id.toString() + flat?.cost?.toString()}>
               <Flat flat={flat} />
             </div>
           // )
         )}
-      </div>
+      </div>}
     </div>
   );
 };

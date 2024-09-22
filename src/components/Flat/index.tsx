@@ -45,7 +45,7 @@ const Flat: FC<{ flat: IRealFlat }> = ({ flat }) => {
   // };
 
   return (
-    <Link href={`/flats/${flat.id}`}>
+    <Link href={`/flats/${flat?.id}`}>
       <div className={styles.flat}>
         <div className={styles.banner}>
           <Swiper
@@ -61,7 +61,7 @@ const Flat: FC<{ flat: IRealFlat }> = ({ flat }) => {
               return ( */}
             <SwiperSlide className={styles.slide}>
               <div className={styles.img}>
-                <img src={flat.image} alt="banner" style={{ height: 300, width: '100%' }} />
+                <img src={flat?.image} alt="banner" style={{ height: 300, width: '100%' }} />
               </div>
             </SwiperSlide>
             {/* );
@@ -73,8 +73,8 @@ const Flat: FC<{ flat: IRealFlat }> = ({ flat }) => {
             <div className={styles.avatar}>
               <img
                 src={
-                  usersList[flat.creator_id]?.avatar
-                    ? usersList[flat.creator_id]?.avatar
+                  usersList[flat?.creator_id]?.avatar
+                    ? usersList[flat?.creator_id]?.avatar
                     : "/icons/userProfile.svg"
                 }
                 alt="avatar"
@@ -83,44 +83,44 @@ const Flat: FC<{ flat: IRealFlat }> = ({ flat }) => {
               />
             </div>
             <div className={styles.userInformation}>
-              <h1>{usersList[flat.creator_id]?.first_name}</h1>
-              <h4>{usersList[flat.creator_id]?.my_town}</h4>
+              <h1>{usersList[flat?.creator_id]?.first_name}</h1>
+              <h4>{usersList[flat?.creator_id]?.my_town}</h4>
             </div>
           </div>
           <h1 className="ml-5">XX%</h1>
         </div>
-        <h3 className={styles.price}>{flat.cost}руб/мес</h3>
+        <h3 className={styles.price}>{flat?.cost} руб/мес</h3>
         <span className={styles.commun}>
-          Комуналка:{flat.cost_utilities}руб/мес
+          Комуналка:{flat?.cost_utilities} руб/мес
         </span>
 
         <div className={styles.flatInfo}>
           <div className={styles.blocks}>
             <ul>
               <li>
-                {flat.count_neighbors === 1
+                {flat?.count_neighbors === 1
                   ? "Общая комната"
                   : "Изолированная комната"}
               </li>
-              <li>{flat.is_have_bail ? "Есть залог" : "Без залога"}</li>
+              <li>{flat?.is_have_bail ? "Есть залог" : "Без залога"}</li>
               <li>
-                {flat.floor}/{flat.building_floor} этаж
+                {flat?.floor}/{flat?.building_floor} этаж
               </li>
               <li>
-                {flat.i_am_owner ? "Я собственник" : "Снимаю эту квартиру"}
+                {flat?.i_am_owner ? "Я собственник" : "Снимаю эту квартиру"}
               </li>
               <li>
-                {flat.is_possible_animals
+                {flat?.is_possible_animals
                   ? "Можно с животными"
                   : "Без животных"}
               </li>
-              <li>{flat.is_possible_smoke ? "Можно курить" : "Не курить"}</li>
+              <li>{flat?.is_possible_smoke ? "Можно курить" : "Не курить"}</li>
             </ul>
           </div>
           <div className={styles.bottomBlocks}>
             <div>
               <ul>
-                <li>Адрес: {flat.address}</li>
+                <li>Адрес: {flat?.address}</li>
                 <li>
                   Район:{" "}
                   {
@@ -155,7 +155,7 @@ const Flat: FC<{ flat: IRealFlat }> = ({ flat }) => {
         </YMaps> */}
         <div className={styles.userButtons}>
           <div>
-            <Link href={`/profile/${flat.creator_id + 1}`}>
+            <Link href={`/profile/${flat?.creator_id + 1}`}>
               <button>Написать</button>
             </Link>
           </div>

@@ -18,7 +18,7 @@ const Neighbor: FC<INeighbor> = ({ user, hide }) => {
         <div className={styles.containerUser}>
           <div className={styles.userCard}>
             <div className={styles.avatar}>
-              <Image src={"/icons/userProfile.svg"} alt="avatar" width={100} height={100} />
+              <img src={user.avatar} alt="avatar" style={{height: 60, width: 60, borderRadius: '50%'}} />
             </div>
             <div className={styles.userInformation}>
               <h1>{user.first_name}</h1>

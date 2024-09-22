@@ -24,8 +24,15 @@ const Neighbors = () => {
       credentials: "include",
     });
     const data = await response.json();
-    console.log('data', data)
-    setNeighbors(data);
+    const usersWithImage = await Promise.all(data.map(async (_user: any) => {
+      if (_user.avatar.length > 0) {
+        _user.avatar = "https://3133319-bo35045.twc1.net/media/" + _user.avatar;
+      } else {
+        _user.avatar = "/icons/userProfile.svg"
+      }
+      return _user;
+    }))
+    setNeighbors(usersWithImage);
   }
 
   // const requestOptions = {

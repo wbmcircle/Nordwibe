@@ -2,25 +2,21 @@
 
 import Convenience from "@/components/Convenience";
 import IconCard from "@/components/IconCard";
-import styles from "@/page/FlatDetail/styles.module.scss";
-import Image from "next/image";
-import Link from "next/link";
-import { FC, useEffect, useRef, useState } from "react";
-import { notFound, usePathname } from "next/navigation";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/store";
 import { useTypedSelector } from "@/hooks/selector.hook";
-import { Swiper, SwiperSlide } from "swiper/react";
+import { IRealFlat } from "@/interfaces/flat.interface";
+import { IRealUser } from "@/interfaces/user.interface";
+import styles from "@/page/FlatDetail/styles.module.scss";
+import { GeoObject, Map, YMaps } from "@pbe/react-yandex-maps";
+import Link from "next/link";
+import { notFound, usePathname } from "next/navigation";
+import { FC, useEffect, useRef, useState } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import { A11y, Navigation, Pagination, Scrollbar } from "swiper/modules";
-import { YMaps, Map, GeoObject } from "@pbe/react-yandex-maps";
+import { Swiper, SwiperSlide } from "swiper/react";
 import TickLOGO from "../../../public/svgs/tick";
-import { IRealFlat } from "@/interfaces/flat.interface";
-import { FlatList, users, usersList } from "@/config";
-import { IRealUser } from "@/interfaces/user.interface";
 
 const FlatDetail: FC<{ id: string }> = ({ id }) => {
   const pathname = usePathname();

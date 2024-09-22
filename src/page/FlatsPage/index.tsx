@@ -1,7 +1,6 @@
 "use client";
 
 import Flat from "@/components/Flat";
-import { FlatList, flats } from "@/config";
 import { useTypedSelector } from "@/hooks/selector.hook";
 import { IRealFlat } from "@/interfaces/flat.interface";
 import styles from "@/page/FlatsPage/styles.module.scss";

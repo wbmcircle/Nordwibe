@@ -17,7 +17,8 @@ const Home = () => {
   const [openStories, setOpenStories] = useState(false);
   const calcNewMessages = useRef<number>(0);
   const [resCount, setResCount] = useState(0);
-  const [realArticles, setRealArticles] = useState<IArticle[]>([])
+  const [realArticles, setRealArticles] = useState<IArticle[]>([]);
+  const [loadingArticle, setLoadingArticle] = useState(false);
 
   let messages: IUser | null = null;
   const swipeStart = useRef(0)
@@ -37,17 +38,23 @@ const Home = () => {
   }
 
   const getArticles = async () => {
+    setLoadingArticle(true);
     const response = await fetch("https://3133319-bo35045.twc1.net/api/v0/stories/", {
       method: "GET",
       credentials: "include",
-    })
+    });
     const data = await response.json();
-    data.map(async (_article: any) => {
-      const imageLink = await getImage(_article.preview_image_id)
-      console.log('imageLink', imageLink)
-      _article.image = 'https://3133319-bo35045.twc1.net/media/' + imageLink
-    })
-    setRealArticles(data);
+    
+    // Use Promise.all to wait for all image fetches to complete
+    const articlesWithImages = await Promise.all(data.map(async (_article: any) => {
+      const imageLink = await getImage(_article.preview_image_id);
+      console.log('imageLink', imageLink);
+      _article.image = 'https://3133319-bo35045.twc1.net/media/' + imageLink;
+      return _article; // Return the modified article
+    }));
+    
+    setRealArticles(articlesWithImages); // Set articles after all images are fetched
+    setLoadingArticle(false);
   }
 
   const getImage = async (imageId: number) => {
@@ -177,7 +184,7 @@ const Home = () => {
         <br />
       </div>
       <h1>Журнал</h1>
-      <div className={styles.articles}>
+      {!loadingArticle && <div className={styles.articles}>
         {realArticles.map((article, index) => (
           <div className={styles.artic}>
             <Article
@@ -189,7 +196,7 @@ const Home = () => {
             />
           </div>
         ))}
-      </div>
+      </div>}
     </div>
   );
 };

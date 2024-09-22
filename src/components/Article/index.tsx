@@ -14,10 +14,6 @@ interface IArticle {
 
 const Article: FC<IArticle> = ({ image, subtitle, time, title, id }) => {
 
-  useEffect(() => {
-    console.log('image', image)
-  }, [image])
-
   return (
     <Link href={`/articles/${id}`}>
       <div className={`${styles.article}`}>

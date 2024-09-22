@@ -16,13 +16,13 @@ const Articles = () => {
       credentials: "include",
     })
     const data = await response.json();
-    data.map(async (_article: any) => {
-      const imageLink = await getImage(_article.preview_image_id)
-      console.log('imageLink', imageLink)
-      _article.image = 'https://3133319-bo35045.twc1.net/media/' + imageLink
-    })
-    console.log('data', data)
-    setRealArticles(data);
+    const articlesWithImages = await Promise.all(data.map(async (_article: any) => {
+      const imageLink = await getImage(_article.preview_image_id);
+      console.log('imageLink', imageLink);
+      _article.image = 'https://3133319-bo35045.twc1.net/media/' + imageLink;
+      return _article; // Return the modified article
+    }));
+    setRealArticles(articlesWithImages);
   }
 
   const getImage = async (imageId: number) => {

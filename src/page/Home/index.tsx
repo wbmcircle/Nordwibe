@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import Stories from "react-insta-stories";
 import NOTIFICATIONLOGO from "../../../public/svgs/notification";
+import { getArticles, getImage } from "@/service/api";
 
 const Home = () => {
 
@@ -33,41 +34,20 @@ const Home = () => {
       },
     })
     const data = await response.json();
-    const loginInfo = data.username;
-    getArticles();
-  }
+    fetchArticles();
+  };
 
-  const getArticles = async () => {
+  const fetchArticles = async () => {
     setLoadingArticle(true);
-    const response = await fetch("https://3133319-bo35045.twc1.net/api/v0/stories/", {
-      method: "GET",
-      credentials: "include",
-    });
-    const data = await response.json();
-    
-    // Use Promise.all to wait for all image fetches to complete
+    const data = await getArticles();
     const articlesWithImages = await Promise.all(data.map(async (_article: any) => {
       const imageLink = await getImage(_article.preview_image_id);
-      console.log('imageLink', imageLink);
       _article.image = 'https://3133319-bo35045.twc1.net/media/' + imageLink;
-      return _article; // Return the modified article
+      return _article;
     }));
-    
-    setRealArticles(articlesWithImages); // Set articles after all images are fetched
+    setRealArticles(articlesWithImages);
     setLoadingArticle(false);
-  }
-
-  const getImage = async (imageId: number) => {
-    const response = await fetch("https://3133319-bo35045.twc1.net/api/v0/get_images/?ids=" + imageId, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
-    const data = await response.json();
-    return data[0];
-  }
+  };
 
   const CloseStoriesWithSwipe = (end: number) => {
 

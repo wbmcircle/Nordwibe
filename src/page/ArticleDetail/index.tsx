@@ -5,40 +5,21 @@ import Image from "next/image"
 import { FC, useEffect, useState } from "react"
 import { notFound } from "next/navigation"
 import { IArticle } from "@/interfaces/article.interface";
+import { getArticles, getImage } from "@/service/api";
 
 const ArticleDetail: FC<{ id: string }> = ({ id }) => {
   const article = articles[Number(id)]
   const [realArticle, setRealArticle] = useState<IArticle>({} as IArticle)
 
-  const getArticles = async () => {
-    const response = await fetch(`https://3133319-bo35045.twc1.net/api/v0/stories/${id}`, {
-      method: "GET",
-      credentials: "include",
-    })
-    const data = await response.json();
-    console.log('getArticles', data)
-    const imageLink = await getImage(data.preview_image_id)
-    console.log('imageLink', imageLink)
-    data.image = 'https://3133319-bo35045.twc1.net/media/' + imageLink
-    console.log("data", data)
+  const fetchArticle = async () => {
+    const data = await getArticles();
+    const imageLink = await getImage(data.preview_image_id);
+    data.image = 'https://3133319-bo35045.twc1.net/media/' + imageLink;
     setRealArticle(data);
   }
 
-  const getImage = async (imageId: number) => {
-    const response = await fetch("https://3133319-bo35045.twc1.net/api/v0/get_images/?ids=" + imageId, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
-    const data = await response.json();
-    console.log('get image', data)
-    return data[0];
-  }
-
   useEffect(() => {
-    getArticles();
+    fetchArticle();
   }, [id])
 
   if (!article) return notFound()

@@ -1,44 +1,27 @@
 "use client";
 
 import Article from "@/components/Article";
-import { articles } from "@/config";
+import { IArticle } from "@/interfaces/article.interface";
 import styles from "@/page/Articles/styles.module.scss";
 import { useEffect, useState } from "react";
-import { IArticle } from "@/interfaces/article.interface";
+import { getArticles, getImage } from "@/service/api";
 
 const Articles = () => {
 
   const [realArticles, setRealArticles] = useState<IArticle[]>([])
 
-  const getArticles = async () => {
-    const response = await fetch("https://3133319-bo35045.twc1.net/api/v0/stories/", {
-      method: "GET",
-      credentials: "include",
-    })
-    const data = await response.json();
+  const fetchArticles = async () => {
+    const data = await getArticles();
     const articlesWithImages = await Promise.all(data.map(async (_article: any) => {
       const imageLink = await getImage(_article.preview_image_id);
-      console.log('imageLink', imageLink);
       _article.image = 'https://3133319-bo35045.twc1.net/media/' + imageLink;
-      return _article; // Return the modified article
+      return _article; 
     }));
     setRealArticles(articlesWithImages);
   }
 
-  const getImage = async (imageId: number) => {
-    const response = await fetch("https://3133319-bo35045.twc1.net/api/v0/get_images/?ids=" + imageId, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
-    const data = await response.json();
-    return data[0];
-  }
-
   useEffect(() => {
-    getArticles();
+    fetchArticles();
   }, [])
 
   return (

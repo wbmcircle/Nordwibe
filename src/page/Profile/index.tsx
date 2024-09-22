@@ -1,28 +1,24 @@
 "use client";
 
 import Button from "@/components/Button";
+import Diagram from "@/components/Diagram";
 import LinkCard from "@/components/LinkCard";
-import { LinkCardsProfile, flats, profileUsersCards, users } from "@/config";
+import { LinkCardsProfile, users } from "@/config";
+import { useTypedSelector } from "@/hooks/selector.hook";
+import { IRealUserMe, IUser } from "@/interfaces/user.interface";
 import styles from "@/page/Profile/styles.module.scss";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { FC, useEffect, useRef } from "react";
-import TGLOGO from "../../../public/svgs/tg";
-import VKLOGO from "../../../public/svgs/vk";
-import PHONELOGO from "../../../public/svgs/phone";
+import { FC, useEffect, useRef, useState } from "react";
+import EXITLOGO from "../../../public/svgs/exit";
+import HELPLOGO from "../../../public/svgs/help";
 import MAILLOGO from "../../../public/svgs/mail";
 import NOTIFICATIONLOGO from "../../../public/svgs/notification";
-import READLOGO from "../../../public/svgs/read";
-import HELPLOGO from "../../../public/svgs/help";
-import EXITLOGO from "../../../public/svgs/exit";
-import { useTypedSelector } from "@/hooks/selector.hook";
-import Diagram from "@/components/Diagram";
-import UserIdentityCard from "@/components/UserIdentiryCard";
-import Flat from "@/components/Flat";
-import { useState } from "react";
-import { IRealUserMe, IUser } from "@/interfaces/user.interface";
-import Neighbor from "@/components/Neighbor";
+import PHONELOGO from "../../../public/svgs/phone";
+import TGLOGO from "../../../public/svgs/tg";
+import VKLOGO from "../../../public/svgs/vk";
+import { getMyProfile } from "@/service/api";
 
 const Profile: FC<{ id: string }> = ({ id }) => {
   // const user = users.find((user) => user.id === Number(id));
@@ -44,21 +40,12 @@ const Profile: FC<{ id: string }> = ({ id }) => {
   if (!user) return notFound();
 
   const getUserData = async () => {
-    const response = await fetch("https://3133319-bo35045.twc1.net/api/v0/users/me/", {
-      method: "GET",
-      credentials: "include",
-    })
-    const data = await response.json();
+    const data = await getMyProfile("me");
     setUser(data);
-  }
+  };
 
   useEffect(() => {
     calcNewMessages.current = 0;
-    // messages.notifications.map((n) => {
-    //   if (n[0] == 1) {
-    //     calcNewMessages.current += 1;
-    //   }
-    // });
     getUserData();
     setResCount(calcNewMessages.current);
   }, []);

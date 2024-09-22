@@ -1,12 +1,11 @@
 "use client";
 
 import Neighbor from "@/components/Neighbor";
-import { users } from "@/config";
 import { useTypedSelector } from "@/hooks/selector.hook";
-import { IUser } from "@/interfaces/user.interface";
+import { IRealUser } from "@/interfaces/user.interface";
 import styles from "@/page/Neighbors/styles.module.scss";
 import { useEffect, useState } from "react";
-import { IRealUser } from "@/interfaces/user.interface";
+import { getUsers } from "@/service/api";
 
 const Neighbors = () => {
   const search = useTypedSelector(
@@ -16,22 +15,17 @@ const Neighbors = () => {
     (selector) => selector.filtersSlice.neighbors.age
   );
   const [neighbors, setNeighbors] = useState<Array<IRealUser>>([]);
-  const [users, setUsers] = useState<IRealUser[]>([])
 
-  const getUsers = async () => {
-    const response = await fetch("https://3133319-bo35045.twc1.net/api/v0/users/", {
-      method: "GET",
-      credentials: "include",
-    });
-    const data = await response.json();
+  const getAllUsers = async () => {
+    const data = await getUsers();
     const usersWithImage = await Promise.all(data.map(async (_user: any) => {
       if (_user.avatar.length > 0) {
         _user.avatar = "https://3133319-bo35045.twc1.net/media/" + _user.avatar;
       } else {
-        _user.avatar = "/icons/userProfile.svg"
+        _user.avatar = "/icons/userProfile.svg";
       }
       return _user;
-    }))
+    }));
     setNeighbors(usersWithImage);
   }
 
@@ -70,7 +64,7 @@ const Neighbors = () => {
   };
 
   useEffect(() => {
-    getUsers();
+    getAllUsers();
   }, [])
 
   return (

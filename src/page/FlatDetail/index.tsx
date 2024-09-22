@@ -17,6 +17,7 @@ import "swiper/css/scrollbar";
 import { A11y, Navigation, Pagination, Scrollbar } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import TickLOGO from "../../../public/svgs/tick";
+import { getHouseById, getUsers, getImage } from "@/service/api";
 
 const FlatDetail: FC<{ id: string }> = ({ id }) => {
   const pathname = usePathname();
@@ -45,12 +46,8 @@ const FlatDetail: FC<{ id: string }> = ({ id }) => {
     });
   };
 
-  const getUsers = async () => {
-    const response = await fetch("https://3133319-bo35045.twc1.net/api/v0/users/", {
-      method: "GET",
-      credentials: "include",
-    });
-    const data = await response.json();
+  const fetchUsers = async () => {
+    const data = await getUsers();
     setUsers(data);
   }
 
@@ -59,41 +56,21 @@ const FlatDetail: FC<{ id: string }> = ({ id }) => {
     navigator.clipboard.writeText(url);
   };
 
-  const getImage = async (imageId: number) => {
-    const response = await fetch("https://3133319-bo35045.twc1.net/api/v0/get_images/?ids=" + imageId, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
-    const data = await response.json();
-    return data[0];
-  }
-
-  const getHouseById = async () => {
-    const response = await fetch(`https://3133319-bo35045.twc1.net/api/v0/house/${id}`, {
-      method: "GET",
-      credentials: "include",
-    })
-    const data = await response.json();
+  const fetchHouseById = async () => {
+    const data = await getHouseById(id);
     if (data.photos_ids[0]) {
-      const imageLink = await getImage(data.photos_ids[0])
-      console.log('imageLink', imageLink)
-      data.image = 'https://3133319-bo35045.twc1.net/media/' + imageLink
+      const imageLink = await getImage(data.photos_ids[0]);
+      data.image = 'https://3133319-bo35045.twc1.net/media/' + imageLink;
     } else {
-      data.image = "https://img.dmclk.ru/vitrina/owner/ce/5e/ce5ee961a36f4648864c92328a8263e0.jpg"
+      data.image = "https://img.dmclk.ru/vitrina/owner/ce/5e/ce5ee961a36f4648864c92328a8263e0.jpg";
     }
-    console.log("data", data)
     setFlat(data);
   }
 
   useEffect(() => {
-    getHouseById();
-    getUsers();
+    fetchHouseById();
+    fetchUsers();
   }, [id])
-
-  // useEffect(() => { }, []);
 
   if (!flat) return notFound();
 

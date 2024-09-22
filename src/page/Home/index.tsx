@@ -2,17 +2,15 @@
 
 import Article from "@/components/Article";
 import LinkCard from "@/components/LinkCard";
-import Post from "@/components/Post";
-import { LinkCards, articles, posts, storyList } from "@/config";
+import { LinkCards, storyList } from "@/config";
+import { useTypedSelector } from "@/hooks/selector.hook";
+import { IArticle } from "@/interfaces/article.interface";
+import { IUser } from "@/interfaces/user.interface";
 import styles from "@/page/Home/styles.module.scss";
 import Link from "next/link";
-import NOTIFICATIONLOGO from "../../../public/svgs/notification";
 import { useEffect, useRef, useState } from "react";
-import { IUser } from "@/interfaces/user.interface";
-import { useTypedSelector } from "@/hooks/selector.hook";
 import Stories from "react-insta-stories";
-import Checkbox from "@/components/Form/Checkbox";
-import { IArticle } from "@/interfaces/article.interface";
+import NOTIFICATIONLOGO from "../../../public/svgs/notification";
 
 const Home = () => {
 
@@ -25,40 +23,43 @@ const Home = () => {
   const swipeStart = useRef(0)
   messages = useTypedSelector((selector) => selector.userSlice.user);
 
-  const getArticles = async () => {
-    fetch("https://3133319-bo35045.twc1.net/api/v0/stories/", {
-      method: "GET",
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then(async (res) => {
-        res.map(async (_article: any) => {
-          const imageLink = await getImage(_article.preview_image_id)
-          console.log('imageLink', imageLink)
-          _article.image = imageLink
-        })
-        setRealArticles(res);
-        console.log('====>', res)
-      })
-      .catch((error) => console.log(error));
-  }
-
-  const getImage = async (imageId: number) => {
-    console.log('---->', document.cookie)
-    fetch("https://3133319-bo35045.twc1.net/api/v0/get_images/?ids=" + imageId, {
+  const login = async () => {
+    const response = await fetch("https://3133319-bo35045.twc1.net/api/v0/login/", {
       method: "GET",
       credentials: "include",
       headers: {
-        "Content-Type": "application/json",
-        "Cookie": "sessionid=yglrh8sv01y4uzhafscowshuqw17f314; csrftoken=aucOV4UmGKgnfma5JaVQSpQfDWK7pDRA" 
-      }
+        Authorization: `Basic KzcxMjM0NTY3ODkwOmFkbWlu`,
+      },
     })
-      .then((res) => res.json())
-      .then((res) => {
-        console.log(res)
-        return res;
-      })
-      .catch((error) => console.log(error));
+    const data = await response.json();
+    const loginInfo = data.username;
+    getArticles();
+  }
+
+  const getArticles = async () => {
+    const response = await fetch("https://3133319-bo35045.twc1.net/api/v0/stories/", {
+      method: "GET",
+      credentials: "include",
+    })
+    const data = await response.json();
+    data.map(async (_article: any) => {
+      const imageLink = await getImage(_article.preview_image_id)
+      console.log('imageLink', imageLink)
+      _article.image = 'https://3133319-bo35045.twc1.net/media/' + imageLink
+    })
+    setRealArticles(data);
+  }
+
+  const getImage = async (imageId: number) => {
+    const response = await fetch("https://3133319-bo35045.twc1.net/api/v0/get_images/?ids=" + imageId, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    const data = await response.json();
+    return data[0];
   }
 
   const CloseStoriesWithSwipe = (end: number) => {
@@ -79,23 +80,23 @@ const Home = () => {
       }
     });
 
-    getArticles();
+    login();
 
     setResCount(calcNewMessages.current);
   }, []);
   return (
     <div className={`${styles.home}`}>
       {/* {window.innerWidth > 900 && ( */}
-        <a href="/notifications" className={styles.messages_icon}>
-          <NOTIFICATIONLOGO />
-          {resCount > 0 && (
-            <>
-              <div className={styles.new_messages_count}>
-                {calcNewMessages.current}
-              </div>
-            </>
-          )}
-        </a>
+      <a href="/notifications" className={styles.messages_icon}>
+        <NOTIFICATIONLOGO />
+        {resCount > 0 && (
+          <>
+            <div className={styles.new_messages_count}>
+              {calcNewMessages.current}
+            </div>
+          </>
+        )}
+      </a>
       {/* )} */}
       <div className={`${styles.stories}`}>
         {storyList.map((story, i) => (
@@ -180,7 +181,7 @@ const Home = () => {
         {realArticles.map((article, index) => (
           <div className={styles.artic}>
             <Article
-              image={article.preview_image_id}
+              image={article.image}
               subtitle={"subtitle"}
               time={new Date()}
               title={article.title}

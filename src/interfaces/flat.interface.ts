@@ -58,4 +58,5 @@ export interface IRealFlat {
   is_active: boolean;
   viewes: number;
   is_favorite: boolean;
+  image: string;
 }

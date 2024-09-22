@@ -1634,6 +1634,7 @@ export const articles: Array<IArticle> = [
     title: "Название статьи",
     content:
       "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Odio quidem, totam quibusdam ipsam enim numquam, beatae aliquam earum nulla, odit recusandae? Officiis reprehenderit veritatis veniam omnis consequuntur at voluptatem ducimus. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Odio quidem, totam quibusdam ipsam enim numquam, beatae aliquam earum nulla, odit recusandae? Officiis reprehenderit veritatis veniam omnis consequuntur at voluptatem ducimus. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Odio quidem, totam quibusdam ipsam enim numquam, beatae aliquam earum nulla, odit recusandae? Officiis reprehenderit veritatis veniam omnis consequuntur at voluptatem ducimus. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Odio quidem, totam quibusdam ipsam enim numquam, beatae aliquam earum nulla, odit recusandae? Officiis reprehenderit veritatis veniam omnis consequuntur at voluptatem ducimus.",
+    preview_image_id: ""
   },
   {
     id: 2,
@@ -1643,6 +1644,7 @@ export const articles: Array<IArticle> = [
     title: "Название статьи",
     content:
       "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Odio quidem, totam quibusdam ipsam enim numquam, beatae aliquam earum nulla, odit recusandae? Officiis reprehenderit veritatis veniam omnis consequuntur at voluptatem ducimus. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Odio quidem, totam quibusdam ipsam enim numquam, beatae aliquam earum nulla, odit recusandae? Officiis reprehenderit veritatis veniam omnis consequuntur at voluptatem ducimus. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Odio quidem, totam quibusdam ipsam enim numquam, beatae aliquam earum nulla, odit recusandae? Officiis reprehenderit veritatis veniam omnis consequuntur at voluptatem ducimus. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Odio quidem, totam quibusdam ipsam enim numquam, beatae aliquam earum nulla, odit recusandae? Officiis reprehenderit veritatis veniam omnis consequuntur at voluptatem ducimus.",
+    preview_image_id: ""
   },
   {
     id: 3,
@@ -1652,6 +1654,7 @@ export const articles: Array<IArticle> = [
     title: "Название статьи",
     content:
       "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Odio quidem, totam quibusdam ipsam enim numquam, beatae aliquam earum nulla, odit recusandae? Officiis reprehenderit veritatis veniam omnis consequuntur at voluptatem ducimus. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Odio quidem, totam quibusdam ipsam enim numquam, beatae aliquam earum nulla, odit recusandae? Officiis reprehenderit veritatis veniam omnis consequuntur at voluptatem ducimus. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Odio quidem, totam quibusdam ipsam enim numquam, beatae aliquam earum nulla, odit recusandae? Officiis reprehenderit veritatis veniam omnis consequuntur at voluptatem ducimus. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Odio quidem, totam quibusdam ipsam enim numquam, beatae aliquam earum nulla, odit recusandae? Officiis reprehenderit veritatis veniam omnis consequuntur at voluptatem ducimus.",
+    preview_image_id: ""
   },
 ];
 
@@ -1734,32 +1737,32 @@ export const chats: {
   message: string;
   name: string;
 }[] = [
-  {
-    type: "support",
-    message: "В ваш аккаунт вошли с неизвестного устройсва",
-    name: "Поддержка",
-  },
-  {
-    type: "user",
-    message: "Урод. Деньги верни",
-    name: "Даня",
-  },
-  {
-    type: "user",
-    message: "Урод. Деньги верни",
-    name: "Даня",
-  },
-  {
-    type: "user",
-    message: "Урод. Деньги верни",
-    name: "Даня",
-  },
-  {
-    type: "user",
-    message: "Урод. Деньги верни",
-    name: "Даня",
-  },
-];
+    {
+      type: "support",
+      message: "В ваш аккаунт вошли с неизвестного устройсва",
+      name: "Поддержка",
+    },
+    {
+      type: "user",
+      message: "Урод. Деньги верни",
+      name: "Даня",
+    },
+    {
+      type: "user",
+      message: "Урод. Деньги верни",
+      name: "Даня",
+    },
+    {
+      type: "user",
+      message: "Урод. Деньги верни",
+      name: "Даня",
+    },
+    {
+      type: "user",
+      message: "Урод. Деньги верни",
+      name: "Даня",
+    },
+  ];
 
 export const flats: Array<IFlat> = [
   {
@@ -1811,11 +1814,11 @@ export const habits: {
   habit: THabits;
   label: string;
 }[] = [
-  { habit: "smoking", label: "Курение" },
-  { habit: "sport", label: "Занятие спортом" },
-  { habit: "night owl", label: "Полуночник" },
-  { habit: "early bird", label: "Ранний подъем" },
-];
+    { habit: "smoking", label: "Курение" },
+    { habit: "sport", label: "Занятие спортом" },
+    { habit: "night owl", label: "Полуночник" },
+    { habit: "early bird", label: "Ранний подъем" },
+  ];
 
 export const houseType = [
   "Новостройка-жк",

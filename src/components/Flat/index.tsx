@@ -21,15 +21,17 @@ import { YMaps, Map, Placemark } from "@pbe/react-yandex-maps";
 import { usersList } from "@/config";
 
 const Flat: FC<{ flat: IRealFlat }> = ({ flat }) => {
+
   const dispatch = useDispatch<AppDispatch>();
   const pathname = usePathname();
   const user = useTypedSelector((selector) => selector.userSlice.user);
   const mapRef = useRef();
   const [district, setDistrict] = useState<string>("");
+
   // const geocode = (ymaps: any) => {
   //   ymaps.geocode(flat.address).then((res: any) => {
   //     let firstGeoObject = res.geoObjects.get(0);
-    
+
   //     ymaps
   //       .geocode(firstGeoObject.geometry._coordinates, {
   //         kind: "district",
@@ -43,7 +45,7 @@ const Flat: FC<{ flat: IRealFlat }> = ({ flat }) => {
   // };
 
   return (
-    <Link href={`/flats/${flat.id+1}`}>
+    <Link href={`/flats/${flat.id}`}>
       <div className={styles.flat}>
         <div className={styles.banner}>
           <Swiper
@@ -55,30 +57,30 @@ const Flat: FC<{ flat: IRealFlat }> = ({ flat }) => {
             pagination={{ clickable: true }}
             navigation
           >
-            {flat.photos_ids?.map((photo) => {
-              return (
-                <SwiperSlide className={styles.slide}>
-                  <div className={styles.img}>
-                    <img src={photo} alt="banner" />
-                  </div>
-                </SwiperSlide>
-              );
-            })}
+            {/* {flat.photos_ids?.map((photo) => {
+              return ( */}
+            <SwiperSlide className={styles.slide}>
+              <div className={styles.img}>
+                <img src={flat.image} alt="banner" style={{ height: 300, width: '100%' }} />
+              </div>
+            </SwiperSlide>
+            {/* );
+            })} */}
           </Swiper>
         </div>
         <div className={styles.containerUser}>
           <div className={styles.userCard}>
             <div className={styles.avatar}>
-                <img
-                  src={
-                    usersList[flat.creator_id]?.avatar
-                      ? usersList[flat.creator_id]?.avatar
-                      : "/icons/userProfile.svg"
-                  }
-                  alt="avatar"
-                  width={"100%"}
-                  height={"100%"}
-                />
+              <img
+                src={
+                  usersList[flat.creator_id]?.avatar
+                    ? usersList[flat.creator_id]?.avatar
+                    : "/icons/userProfile.svg"
+                }
+                alt="avatar"
+                width={"100%"}
+                height={"100%"}
+              />
             </div>
             <div className={styles.userInformation}>
               <h1>{usersList[flat.creator_id]?.first_name}</h1>
@@ -118,13 +120,13 @@ const Flat: FC<{ flat: IRealFlat }> = ({ flat }) => {
           <div className={styles.bottomBlocks}>
             <div>
               <ul>
-                <li>Адрес:</li>
+                <li>Адрес: {flat.address}</li>
                 <li>
                   Район:{" "}
                   {
                     district.split(",")
                     [district.split(",").length - 1]
-                     
+
                   }
                 </li>
               </ul>

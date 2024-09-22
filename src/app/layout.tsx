@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter, Montserrat } from "next/font/google";
 import "@/base.scss";
 import Layout from "@/components/Layout";
-import { useEffect } from "react";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 

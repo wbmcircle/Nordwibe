@@ -20,18 +20,19 @@ import { YMaps, Map, GeoObject } from "@pbe/react-yandex-maps";
 import TickLOGO from "../../../public/svgs/tick";
 import { IRealFlat } from "@/interfaces/flat.interface";
 import { FlatList, users, usersList } from "@/config";
+import { IRealUser } from "@/interfaces/user.interface";
 
 const FlatDetail: FC<{ id: string }> = ({ id }) => {
   const pathname = usePathname();
 
-  const [flat, setFlat] = useState<IRealFlat>(
-    FlatList[+pathname.split("/")[pathname.split("/").length - 1] - 1]
-  );
+  const [flat, setFlat] = useState<IRealFlat>({} as IRealFlat);
+  const [users, setUsers] = useState<IRealUser[]>([])
   const [open, setOpen] = useState(false);
   const [addressCoord, setAddressCoord] = useState([55.75, 37.57]);
   const user = useTypedSelector((selector) => selector.userSlice.user);
   const mapRef = useRef();
   const [district, setDistrict] = useState<string>("");
+
   const geocode = (ymaps: any) => {
     ymaps.geocode(flat.address).then((res: any) => {
       let firstGeoObject = res.geoObjects.get(0);
@@ -48,10 +49,53 @@ const FlatDetail: FC<{ id: string }> = ({ id }) => {
     });
   };
 
+  const getUsers = async () => {
+    const response = await fetch("https://3133319-bo35045.twc1.net/api/v0/users/", {
+      method: "GET",
+      credentials: "include",
+    });
+    const data = await response.json();
+    setUsers(data);
+  }
+
   const copyGeoLink = (longitude: number, latitude: number) => {
     const url = `https://yandex.ru/maps/?ll=${longitude},${latitude}&z=15`;
     navigator.clipboard.writeText(url);
   };
+
+  const getImage = async (imageId: number) => {
+    const response = await fetch("https://3133319-bo35045.twc1.net/api/v0/get_images/?ids=" + imageId, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    const data = await response.json();
+    return data[0];
+  }
+
+  const getHouseById = async () => {
+    const response = await fetch(`https://3133319-bo35045.twc1.net/api/v0/house/${id}`, {
+      method: "GET",
+      credentials: "include",
+    })
+    const data = await response.json();
+    if (data.photos_ids[0]) {
+      const imageLink = await getImage(data.photos_ids[0])
+      console.log('imageLink', imageLink)
+      data.image = 'https://3133319-bo35045.twc1.net/media/' + imageLink
+    } else {
+      data.image = "https://img.dmclk.ru/vitrina/owner/ce/5e/ce5ee961a36f4648864c92328a8263e0.jpg"
+    }
+    console.log("data", data)
+    setFlat(data);
+  }
+
+  useEffect(() => {
+    getHouseById();
+    getUsers();
+  }, [id])
 
   // useEffect(() => { }, []);
 
@@ -94,16 +138,16 @@ const FlatDetail: FC<{ id: string }> = ({ id }) => {
               navigation
               className={styles.swiper_module}
             >
-              {flat.photos_ids.map((el) => {
-                return (
-                  <SwiperSlide
-                    onClick={() => setOpen(true)}
-                    className={styles.slide}
-                  >
-                    <img src={el} alt="banner" />
-                  </SwiperSlide>
-                );
-              })}
+              {/* {flat.photos_ids.map((el) => {
+                return ( */}
+              <SwiperSlide
+                onClick={() => setOpen(true)}
+                className={styles.slide}
+              >
+                <img src={flat.image} alt="banner" style={{ height: 300, width: '100%' }} />
+              </SwiperSlide>
+              {/* );
+              })} */}
             </Swiper>
           </div>
         </>
@@ -120,16 +164,16 @@ const FlatDetail: FC<{ id: string }> = ({ id }) => {
             pagination={{ clickable: true }}
             className={styles.swiper}
           >
-            {flat.photos_ids.map((el) => {
-              return (
-                <SwiperSlide
-                  onClick={() => setOpen(true)}
-                  className={styles.slide}
-                >
-                  <img src={el} alt="banner" />
-                </SwiperSlide>
-              );
-            })}
+            {/* {flat.photos_ids.map((el) => {
+              return ( */}
+            <SwiperSlide
+              onClick={() => setOpen(true)}
+              className={styles.slide}
+            >
+              <img src={flat.image} alt="banner" style={{ height: 300, width: '100%' }} />
+            </SwiperSlide>
+            {/* );
+            })} */}
           </Swiper>
         </div>
         <div className={styles.containerUser}>
@@ -138,8 +182,8 @@ const FlatDetail: FC<{ id: string }> = ({ id }) => {
               <div className={styles.avatar}>
                 <img
                   src={
-                    usersList[flat.creator_id].avatar
-                      ? usersList[flat.creator_id].avatar
+                    users[flat.creator_id]?.avatar
+                      ? users[flat.creator_id]?.avatar
                       : "/icons/userProfile.svg"
                   }
                   alt="avatar"
@@ -150,9 +194,9 @@ const FlatDetail: FC<{ id: string }> = ({ id }) => {
             </Link>
             <div className={styles.userInformation}>
               <Link href={`/profile/`}>
-                <h1>{usersList[flat.creator_id].first_name}</h1>
+                <h1>{users[flat.creator_id]?.first_name}</h1>
               </Link>
-              <h4>{usersList[flat.creator_id].my_town}</h4>
+              <h4>{users[flat.creator_id]?.my_town}</h4>
             </div>
           </div>
           <h1>XX%</h1>
@@ -187,7 +231,7 @@ const FlatDetail: FC<{ id: string }> = ({ id }) => {
           <div className={styles.bottomBlocks}>
             <div>
               <ul>
-                <li>Адрес:</li>
+                <li>Адрес: {flat.address}</li>
                 <li>Район: {district}</li>
                 {/* <li>Удаленность от</li> */}
               </ul>
@@ -356,31 +400,28 @@ const FlatDetail: FC<{ id: string }> = ({ id }) => {
           <h4>О квартире</h4>
           <div className={styles.cards}>
             <IconCard
-              label={`Срок : ${
-                flat.count_days_to / 30 < 1
-                  ? "меньше месяца"
-                  : Math.floor(flat.count_days_to / 30)
-              } ${
-                Math.floor(flat.count_days_to / 30) == 1
+              label={`Срок : ${flat.count_days_to / 30 < 1
+                ? "меньше месяца"
+                : Math.floor(flat.count_days_to / 30)
+                } ${Math.floor(flat.count_days_to / 30) == 1
                   ? "месяц"
                   : Math.floor(flat.count_days_to / 30) == 2 ||
                     Math.floor(flat.count_days_to / 30) == 3 ||
                     Math.floor(flat.count_days_to / 30) == 4
-                  ? "месяца"
-                  : "месяцев"
-              }`}
+                    ? "месяца"
+                    : "месяцев"
+                }`}
               icon="term"
             />
             <IconCard
-              label={`Комнаты : ${+flat.count_rooms} ${
-                +flat.count_rooms == 1
-                  ? "комната"
-                  : flat.count_rooms == 2 ||
-                    flat.count_rooms == 3 ||
-                    flat.count_rooms == 4
+              label={`Комнаты : ${+flat.count_rooms} ${+flat.count_rooms == 1
+                ? "комната"
+                : flat.count_rooms == 2 ||
+                  flat.count_rooms == 3 ||
+                  flat.count_rooms == 4
                   ? "комнаты"
                   : "комнат"
-              }`}
+                }`}
               icon="rooms"
             />
             <IconCard label={`Ремонт : ${flat.repair_type}`} icon="repair" />

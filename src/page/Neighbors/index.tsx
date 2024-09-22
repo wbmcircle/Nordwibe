@@ -6,6 +6,7 @@ import { useTypedSelector } from "@/hooks/selector.hook";
 import { IUser } from "@/interfaces/user.interface";
 import styles from "@/page/Neighbors/styles.module.scss";
 import { useEffect, useState } from "react";
+import { IRealUser } from "@/interfaces/user.interface";
 
 const Neighbors = () => {
   const search = useTypedSelector(
@@ -14,7 +15,18 @@ const Neighbors = () => {
   const filters = useTypedSelector(
     (selector) => selector.filtersSlice.neighbors.age
   );
-  const [neighbors, setNeighbors] = useState<Array<IUser>>(users);
+  const [neighbors, setNeighbors] = useState<Array<IRealUser>>([]);
+  const [users, setUsers] = useState<IRealUser[]>([])
+
+  const getUsers = async () => {
+    const response = await fetch("https://3133319-bo35045.twc1.net/api/v0/users/", {
+      method: "GET",
+      credentials: "include",
+    });
+    const data = await response.json();
+    console.log('data', data)
+    setNeighbors(data);
+  }
 
   // const requestOptions = {
   //   method: "POST",
@@ -46,21 +58,26 @@ const Neighbors = () => {
   // }, [])
 
   const hide = (id: number) => {
+    console.log('id', id)
     setNeighbors(neighbors.filter((user) => user.id != id));
   };
+
+  useEffect(() => {
+    getUsers();
+  }, [])
 
   return (
     <div className={styles.neighbors}>
       <div className={styles.container}>
         {neighbors.map(
           (user) =>
-            user.name.toLowerCase().startsWith(search.toLowerCase()) &&
-            user.age <= filters.to &&
-            user.age >= filters.from && (
-              <div className={styles.neigh}>
-                <Neighbor user={user} hide={hide} />
-              </div>
-            )
+            user.first_name.toLowerCase().startsWith(search.toLowerCase()) &&
+            // user.age <= filters.to &&
+            // user.age >= filters.from && (
+            <div className={styles.neigh}>
+              <Neighbor user={user} hide={hide} />
+            </div>
+          // )
         )}
       </div>
     </div>

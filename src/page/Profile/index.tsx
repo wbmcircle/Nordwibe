@@ -35,37 +35,23 @@ const Profile: FC<{ id: string }> = ({ id }) => {
   const [resCount, setResCount] = useState(0);
   let messages: IUser | null = null;
   messages = useTypedSelector((selector) => selector.userSlice.user);
-  const [user, setUser] = useState<IRealUserMe>({
-    id: 0,
-    first_name: "Витя",
-    date_joined: "2024-09-11T21:44:39.177Z",
-    count_visits: 0,
-    avatar: "",
-    purpose: "JB",
-    occupation: "UK",
-    smoking: "U",
-    pets: "U",
-    first_aid: "U",
-    social_interaction: "U",
-    home_town: "Питер",
-    my_town: "Москва",
-    is_favorite: true,
-    username: "vitalik",
-    email: "hooll@gmail.com",
-    date_birthday: "2004-09-11T21:44:39.177Z",
-    gender: "UK",
-    type_auth: "NM",
-    is_staff: true,
-    is_active: true,
-    last_login: "2024-09-11T21:44:39.177Z",
-    is_superuser: true,
-  });
+  const [user, setUser] = useState<IRealUserMe>({} as IRealUserMe);
   const age =
     user && user.date_birthday
       ? new Date().getFullYear() - new Date(user.date_birthday).getFullYear()
       : 0;
 
   if (!user) return notFound();
+
+  const getUserData = async () => {
+    const response = await fetch("https://3133319-bo35045.twc1.net/api/v0/users/me/", {
+      method: "GET",
+      credentials: "include",
+    })
+    const data = await response.json();
+    setUser(data);
+  }
+
   useEffect(() => {
     calcNewMessages.current = 0;
     // messages.notifications.map((n) => {
@@ -73,15 +59,7 @@ const Profile: FC<{ id: string }> = ({ id }) => {
     //     calcNewMessages.current += 1;
     //   }
     // });
-    fetch("https://3133319-bo35045.twc1.net/api/v0/users/", {
-      method: "GET",
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((res: IRealUserMe) => console.log(res))
-      .catch((error) => console.log(error));
-    if (user.social_interaction) {
-    }
+    getUserData();
     setResCount(calcNewMessages.current);
   }, []);
 
@@ -163,7 +141,7 @@ const Profile: FC<{ id: string }> = ({ id }) => {
           image={LinkCardsProfile[0][0]}
           text={LinkCardsProfile[0][1]}
           text_two={
-            user.pets.toLowerCase() == "да" ? "Есть питомцы" : "Без питомцев"
+            user.pets?.toLowerCase() == "да" ? "Есть питомцы" : "Без питомцев"
           }
         />
         <LinkCard
@@ -180,7 +158,7 @@ const Profile: FC<{ id: string }> = ({ id }) => {
           text={LinkCardsProfile[2][1]}
           text_two={
             user.occupation?.toLowerCase() == "без работы" ||
-            user.occupation?.toLowerCase() == "неизвестно"
+              user.occupation?.toLowerCase() == "неизвестно"
               ? "Путешествую"
               : user.occupation
           }
@@ -192,8 +170,8 @@ const Profile: FC<{ id: string }> = ({ id }) => {
             user.social_interaction?.toLowerCase() == "да"
               ? "Устраиваю перекуры"
               : user.social_interaction?.toLowerCase() == "иногда"
-              ? "Парю"
-              : "Не курю"
+                ? "Парю"
+                : "Не курю"
           }
         />
 
@@ -260,13 +238,13 @@ const Profile: FC<{ id: string }> = ({ id }) => {
       </div>
 
       {/* Если квартиры чела есть*/}
-      {true && (
-        <div className={styles.flats}>
-          <h4>Предложения жилья:</h4>
-          {/* Тут тащим квартиры юзера или чела чей айдишник*/}
-          <Flat flat={flats[1]} />
-        </div>
-      )}
+      {/* {true && ( */}
+      {/* <div className={styles.flats}> */}
+      {/* <h4>Предложения жилья:</h4> */}
+      {/* Тут тащим квартиры юзера или чела чей айдишник*/}
+      {/* <Flat flat={flats[1]} /> */}
+      {/* </div> */}
+      {/* )} */}
 
       {/* Если у п в лк нет квартир и это лк*/}
       {user.id === yourUser.id && false && (

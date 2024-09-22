@@ -5,6 +5,7 @@ import FavouritesUser from "@/components/Favourites/User";
 import Flat from "@/components/Flat";
 import { useTypedSelector } from "@/hooks/selector.hook";
 import styles from "@/page/Favourites/styles.module.scss"
+import { IRealFlat } from "@/interfaces/flat.interface";
 
 const Favourites = () => {
   const user = useTypedSelector(selector => selector.userSlice.user)
@@ -24,7 +25,7 @@ const Favourites = () => {
         <h3>Квартиры</h3>
         {
           user.favourites.flats.length === 0 ? <h4>Вы еще не добавляли ничего в избранное</h4> : user.favourites.flats.map(favourite => (
-            <Flat flat={favourite} />
+            <Flat flat={favourite as unknown as IRealFlat} />
           ))
         }
       </div>
